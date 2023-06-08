@@ -7,23 +7,25 @@ const Container = styled.div`
   margin: 8px;
   border: 1px solid lightgrey;
   border-radius: 2px;
-`;
-const Title = styled.h3`
+  `;
+  const Title = styled.h3`
   padding: 8px;
-`;
-const TaskList = styled.div`
+  `;
+  const TaskList = styled.div`
   padding: 8px;
+  transition:background-color 0.2s ease;
+  background-color:${props=>props.isDraggingOver?"gray":"white"}
 `;
-
 
 export default function Column({ column, tasks }) {
   return (
     <Container>
       <Title>{column.title}</Title>
       <StrictModeDroppable droppableId={column.id}>
-        {(provided) => {
+        {(provided, snapshot) => {
+          const isDraggingOver = snapshot.isDraggingOver;
           return (
-            <TaskList ref={provided.innerRef} {...provided.droppableProps}>
+            <TaskList isDraggingOver={isDraggingOver} ref={provided.innerRef} {...provided.droppableProps}>
               {tasks.map((task, index) => (
                 <Task key={task.id} index={index} task={task} />
               ))}

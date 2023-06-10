@@ -7,6 +7,8 @@ const Container = styled.div`
   margin: 8px;
   border: 1px solid lightgrey;
   border-radius: 2px;
+  flex-grow:1;
+  min-heigth:100px;
   `;
   const Title = styled.h3`
   padding: 8px;
@@ -14,7 +16,7 @@ const Container = styled.div`
   const TaskList = styled.div`
   padding: 8px;
   transition:background-color 0.2s ease;
-  background-color:${props=>props.isDraggingOver?"gray":"white"}
+  background-color:${props=>props.isDraggingOver?"gray":"white"};
 `;
 
 export default function Column({ column, tasks }) {

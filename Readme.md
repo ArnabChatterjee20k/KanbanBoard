@@ -4,3 +4,7 @@
 * Each Droppable wraps Draggable
 
 * Droppable expects your children to be a function
+
+# Disabling droppable
+* using Type prop
+* using isdroppabledisabled prop

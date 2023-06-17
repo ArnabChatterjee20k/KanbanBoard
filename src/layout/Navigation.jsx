@@ -15,7 +15,7 @@ const Navigation = ({ children }) => {
         <Layout>
           <Sidebar />
           <Layout className="flex flex-row justify-center">{children}</Layout>
-        </Layout>s
+        </Layout>
       </Content>
     </Layout>
   );

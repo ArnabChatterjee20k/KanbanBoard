@@ -1,11 +1,13 @@
 import React from "react";
 import Navigation from "./layout/Navigation";
+import { Layout, List } from "antd";
+import Board from "./pages/Board/Board";
 
 export default function App() {
   return (
     <>
       <Navigation>
-        <h1 className="text-5xl">dsf</h1>
+        <Board/>
       </Navigation>
     </>
   );

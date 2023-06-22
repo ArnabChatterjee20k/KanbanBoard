@@ -1,34 +1,50 @@
 import { Draggable } from "react-beautiful-dnd";
 import { List } from "antd";
 import StrictModeDroppable from "./StrictModeDroppable";
+import sampleData from "../../../sampleData";
+import { useColumnStore } from "../store/columnStore";
 
-export default function CategoryColumn({ id }) {
+export default function CategoryColumn({ id, index }) {
   const data = ["todo", "prac", "api", "dsa"];
+  const { columns } = useColumnStore((state) => ({
+    columns: state.columns,
+  }));
+  const currentColumn = columns[id];
+  const orderedTasks = columns[id].taskIds;
+  console.log({ orderedTasks });
+  const { tasks } = sampleData;
 
   return (
-    <Draggable draggableId={"col-" + id} index={id}>
+    <Draggable draggableId={id} index={index}>
       {(provided, snapshot) => {
         return (
           <div
-            className="bg-cyan-300"
+            className=" min-w-[200px]"
             ref={provided.innerRef}
             {...provided.dragHandleProps}
             {...provided.draggableProps}
           >
-            <h1 className="text-2xl">Category Title</h1>
+            <h1 className="text-2xl">{currentColumn.title}</h1>
 
-            <StrictModeDroppable droppableId={"col-" + id} type="COLUMN">
+            <StrictModeDroppable droppableId={id} type="TASK-DROPPABLE">
               {(provided, snpashot) => {
                 return (
                   <div
-                    className="bg-red-400"
+                    // className="bg-red-400"
                     ref={provided.innerRef}
                     {...provided.droppableProps}
                   >
                     <List>
-                      {data.map((e, i) => (
-                        <ListItemDraggable index={i} key={i} item={e} id={id} />
-                      ))}
+                      {orderedTasks.length
+                        ? orderedTasks.map((taskId, i) => (
+                            <ListItemDraggable
+                              index={i}
+                              key={taskId}
+                              item={tasks[taskId].content}
+                              id={taskId}
+                            />
+                          ))
+                        : null}
                     </List>
                     {provided.placeholder}
                   </div>
@@ -44,8 +60,7 @@ export default function CategoryColumn({ id }) {
 
 const ListItemDraggable = ({ item, index, id }) => {
   return (
-    <Draggable draggableId={"item-" + id + index} key={index} index={index}>
-
+    <Draggable draggableId={id} key={id} index={index}>
       {(provided, snapshot) => (
         <List.Item
           ref={provided.innerRef}

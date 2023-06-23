@@ -1,11 +1,6 @@
 import { Draggable } from "react-beautiful-dnd";
 import StrictModeDroppable from "./StrictModeDroppable";
-import sampleData from "../../../sampleData";
-import { useColumnStore } from "../store/columnStore";
 import { TASKS_DROPPABLE } from "../constants/DROPPABLE_TYPES";
-import TaskCard from "./TaskCard";
-import AddCategory from "./AddCategory";
-import { Fragment } from "react";
 import TasksList from "./TasksList";
 
 export default function CategoryColumn({ id, index }) {

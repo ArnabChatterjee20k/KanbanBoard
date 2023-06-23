@@ -18,7 +18,7 @@ const columns = {
   },
 };
 
-const columnsOrder = ["column-1", "column-2", "column-3" ];
+const columnsOrder = ["column-1", "column-2", "column-3"];
 
 export const useColumnStore = create((set, get) => ({
   columns: columns,
@@ -81,7 +81,24 @@ export const useColumnStore = create((set, get) => ({
 
       return {
         ...get(),
-        columnsOrder: [...newColumnsOrder] ,
+        columnsOrder: [...newColumnsOrder],
+      };
+    });
+  },
+  addTaskToColumn: (id, taskId) => {
+    if (!get().columns[id]) return;
+    set((state) => {
+      const col = state.columns[id];
+      const tasks = [...col.taskIds, taskId];
+      return {
+        ...get(),
+        columns: {
+          ...state.columns,
+          [id]: {
+            ...state.columns[id],
+            taskIds: tasks,
+          },
+        },
       };
     });
   },

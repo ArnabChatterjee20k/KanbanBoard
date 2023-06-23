@@ -9,7 +9,7 @@ export default function TasksList({id}) {
     columns: state.columns,
   }));
   const currentColumn = columns[id];
-  const orderedTasks = columns[id].taskIds;
+  const orderedTasks = columns[id]?.taskIds;
   const {tasks} = useTaskStore(state=>({
     tasks:state.tasks
   }))
@@ -29,7 +29,7 @@ export default function TasksList({id}) {
             />
           ))
         : null}
-      <AddCategory />
+      <AddCategory id={id}/>
     </List>
   );
 }

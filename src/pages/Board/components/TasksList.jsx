@@ -1,6 +1,6 @@
 import { List } from "antd";
 import TaskCard from "./TaskCard";
-import AddCategory from "./AddCategory";
+import AddCategory from "./AddCategoryTask";
 import { useColumnStore } from "../store/columnStore";
 import { useTaskStore } from "../store/taskStore";
 

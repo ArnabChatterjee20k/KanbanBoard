@@ -3,6 +3,8 @@ import { List } from "antd";
 import StrictModeDroppable from "./StrictModeDroppable";
 import sampleData from "../../../sampleData";
 import { useColumnStore } from "../store/columnStore";
+import { TASKS_DROPPABLE } from "../constants/DROPPABLE_TYPES";
+
 
 export default function CategoryColumn({ id, index }) {
   const data = ["todo", "prac", "api", "dsa"];
@@ -26,7 +28,7 @@ export default function CategoryColumn({ id, index }) {
           >
             <h1 className="text-2xl">{currentColumn.title}</h1>
 
-            <StrictModeDroppable droppableId={id} type="TASK-DROPPABLE">
+            <StrictModeDroppable droppableId={id} type={TASKS_DROPPABLE}>
               {(provided, snpashot) => {
                 return (
                   <div

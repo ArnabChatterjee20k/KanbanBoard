@@ -5,31 +5,39 @@ import { DragDropContext } from "react-beautiful-dnd";
 import sampleData from "../../sampleData";
 import { useTaskStore } from "./store/taskStore";
 import { useColumnStore } from "./store/columnStore";
+import { COLUMN_DROPPABLE, TASKS_DROPPABLE } from "./constants/DROPPABLE_TYPES";
 
 export default function Board() {
-  const { tasks } = sampleData;
-  const { columnsOrder, reorderTask,moveTasks } = useColumnStore((state) => ({
+  const { columnsOrder, reorderTask, moveTasks,reorderColumns } = useColumnStore((state) => ({
     columnsOrder: state.columnsOrder,
     reorderTask: state.reorderTask,
-    moveTasks:state.moveTasks
+    moveTasks: state.moveTasks,
+    reorderColumns:state.reorderColumns
   }));
 
   return (
     <DragDropContext
       onDragEnd={(dndInfo) => {
-        console.log(dndInfo);
         // reordering tasks
-        const { source, destination } = dndInfo;
-        if (source.droppableId === destination.droppableId) {
-          reorderTask(source.droppableId, source.index, destination.index);
+        const { source, destination, type } = dndInfo;
+        if (type === COLUMN_DROPPABLE) reorderColumns(source.index,destination.index);
+        else if (type === TASKS_DROPPABLE) {
+          if (source.droppableId === destination.droppableId) {
+            reorderTask(source.droppableId, source.index, destination.index);
+          } else
+            moveTasks(
+              source.droppableId,
+              destination.droppableId,
+              source.index,
+              destination.index
+            );
         }
-        else moveTasks(source.droppableId,destination.droppableId,source.index,destination.index)
       }}
     >
       <StrictModeDroppable
         direction="HORIZONTAL"
         droppableId={"1"}
-        type="COLUMN-DROPPABLE"
+        type={COLUMN_DROPPABLE}
       >
         {(provided, snapshot) => {
           return (

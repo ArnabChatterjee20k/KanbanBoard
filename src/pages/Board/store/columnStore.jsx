@@ -18,7 +18,7 @@ const columns = {
   },
 };
 
-const columnsOrder = ["column-1", "column-2", "column-3"];
+const columnsOrder = ["column-1", "column-2", "column-3" ];
 
 export const useColumnStore = create((set, get) => ({
   columns: columns,
@@ -54,21 +54,34 @@ export const useColumnStore = create((set, get) => ({
 
       const [pickedTask] = startColTasks.splice(startIndex, 1);
       endColTasks.splice(endIndex, 0, pickedTask);
-        
-    //   debugger;
+
+      //   debugger;
       return {
         ...get(),
         columns: {
           ...get().columns,
           [startCol.id]: {
             ...startCol,
-            taskIds:[...startColTasks]
+            taskIds: [...startColTasks],
           },
           [endCol.id]: {
             ...endCol,
-            taskIds:[...endColTasks]
+            taskIds: [...endColTasks],
           },
         },
+      };
+    });
+  },
+  reorderColumns: (startIndex, endIndex) => {
+    set((state) => {
+      const newColumnsOrder = [...get().columnsOrder];
+
+      const [pickedColumn] = newColumnsOrder.splice(startIndex, 1);
+      newColumnsOrder.splice(endIndex, 0, pickedColumn);
+
+      return {
+        ...get(),
+        columnsOrder: [...newColumnsOrder] ,
       };
     });
   },

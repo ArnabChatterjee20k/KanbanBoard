@@ -11,12 +11,10 @@ const Navigation = ({ children }) => {
   return (
     <Layout className="min-h-screen">
       <HeadNav />
-      <Content>
-        <Layout>
-          <Sidebar />
-          <Layout className="flex flex-row justify-center">{children}</Layout>
-        </Layout>
-      </Content>
+      <Layout>
+        <Sidebar />
+        <Content className="p-8">{children}</Content>
+      </Layout>
     </Layout>
   );
 };

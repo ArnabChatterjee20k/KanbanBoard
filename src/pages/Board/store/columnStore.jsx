@@ -18,11 +18,19 @@ const columns = {
   },
 };
 
+function createColumn(id, title) {
+  return {
+    id,
+    title,
+    taskIds: [],
+  };
+}
+
 const columnsOrder = ["column-1", "column-2", "column-3"];
 
 export const useColumnStore = create((set, get) => ({
-  columns: columns,
-  columnsOrder: columnsOrder,
+  columns,
+  columnsOrder,
   reorderTask: (columnId, startIndex, endIndex) => {
     // debugger;
     set((state) => {
@@ -98,6 +106,18 @@ export const useColumnStore = create((set, get) => ({
             ...state.columns[id],
             taskIds: tasks,
           },
+        },
+      };
+    });
+  },
+  addColumn: (id=crypto.randomUUID(), title = "Category") => {
+    set((state) => {
+      return {
+        ...get(),
+        columnsOrder: [...get().columnsOrder, id],
+        columns: {
+          ...get().columns,
+          [id]: createColumn(id, title),
         },
       };
     });

@@ -2,25 +2,26 @@ import React from "react";
 import StrictModeDroppable from "./components/StrictModeDroppable";
 import CategoryColumn from "./components/CategoryColumn";
 import { DragDropContext } from "react-beautiful-dnd";
-import sampleData from "../../sampleData";
-import { useTaskStore } from "./store/taskStore";
 import { useColumnStore } from "./store/columnStore";
 import { COLUMN_DROPPABLE, TASKS_DROPPABLE } from "./constants/DROPPABLE_TYPES";
+import AddCategory from "./components/AddCategory";
 
 export default function Board() {
-  const { columnsOrder, reorderTask, moveTasks,reorderColumns } = useColumnStore((state) => ({
-    columnsOrder: state.columnsOrder,
-    reorderTask: state.reorderTask,
-    moveTasks: state.moveTasks,
-    reorderColumns:state.reorderColumns
-  }));
+  const { columnsOrder, reorderTask, moveTasks, reorderColumns } =
+    useColumnStore((state) => ({
+      columnsOrder: state.columnsOrder,
+      reorderTask: state.reorderTask,
+      moveTasks: state.moveTasks,
+      reorderColumns: state.reorderColumns,
+    }));
 
   return (
     <DragDropContext
       onDragEnd={(dndInfo) => {
         // reordering tasks
         const { source, destination, type } = dndInfo;
-        if (type === COLUMN_DROPPABLE) reorderColumns(source.index,destination.index);
+        if (type === COLUMN_DROPPABLE)
+          reorderColumns(source.index, destination.index);
         else if (type === TASKS_DROPPABLE) {
           if (source.droppableId === destination.droppableId) {
             reorderTask(source.droppableId, source.index, destination.index);
@@ -49,6 +50,7 @@ export default function Board() {
               {columnsOrder.map((columnId, index) => (
                 <CategoryColumn id={columnId} index={index} key={columnId} />
               ))}
+              <AddCategory />
               {provided.placeholder}
             </div>
           );

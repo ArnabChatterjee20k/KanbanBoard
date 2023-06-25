@@ -7,6 +7,7 @@ import { COLUMN_DROPPABLE, TASKS_DROPPABLE } from "./constants/DROPPABLE_TYPES";
 import AddCategory from "./components/AddCategory";
 import { useParams } from "react-router-dom";
 import { useBoardStore } from "../../store/boardStore";
+import NotFound from "../404/NotFound";
 
 export default function Board() {
   const { reorderTask, moveTasks } = useColumnStore((state) => ({
@@ -19,8 +20,11 @@ export default function Board() {
     reorderColumns: state.reorderColumns,
   }));
 
-  const { columns: columnsOrder } = boards[id];
+  const board = boards[id]  
+  if(!board) return <NotFound/>
 
+
+  const { columns: columnsOrder = null } = boards[id];
   return (
     <DragDropContext
       onDragEnd={(dndInfo) => {

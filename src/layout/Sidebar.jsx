@@ -6,9 +6,7 @@ import CreateBoard from "../components/createBoard";
 
 export default function Sidebar() {
   const boards = useBoardStore((state) => state.boards);
-
-  const newItems = boards?.map((board) => {
-    const [id, details] = Object.entries(board)[0];
+  const newItems = Object.entries(boards)?.map(([id,details]) => {
     return { key: id, label: <Link to={`/board/${id}`}>{details?.title}</Link> };
   });
 

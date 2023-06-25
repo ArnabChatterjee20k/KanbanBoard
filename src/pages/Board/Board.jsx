@@ -9,15 +9,16 @@ import { useParams } from "react-router-dom";
 import { useBoardStore } from "../../store/boardStore";
 
 export default function Board() {
-  const { reorderTask, moveTasks, reorderColumns } = useColumnStore(
-    (state) => ({
-      reorderTask: state.reorderTask,
-      moveTasks: state.moveTasks,
-      reorderColumns: state.reorderColumns,
-    })
-  );
+  const { reorderTask, moveTasks } = useColumnStore((state) => ({
+    reorderTask: state.reorderTask,
+    moveTasks: state.moveTasks,
+  }));
   const { id } = useParams();
-  const boards = useBoardStore((state) => state.boards);
+  const { boards, reorderColumns } = useBoardStore((state) => ({
+    boards: state.boards,
+    reorderColumns: state.reorderColumns,
+  }));
+
   const { columns: columnsOrder } = boards[id];
 
   return (
@@ -26,7 +27,7 @@ export default function Board() {
         // reordering tasks
         const { source, destination, type } = dndInfo;
         if (type === COLUMN_DROPPABLE)
-          reorderColumns(source.index, destination.index);
+          reorderColumns(id,source.index, destination.index);
         else if (type === TASKS_DROPPABLE) {
           if (source.droppableId === destination.droppableId) {
             reorderTask(source.droppableId, source.index, destination.index);

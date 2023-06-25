@@ -30,7 +30,6 @@ const columnsOrder = ["column-1", "column-2", "column-3"];
 
 export const useColumnStore = create((set, get) => ({
   columns,
-  columnsOrder,
   reorderTask: (columnId, startIndex, endIndex) => {
     // debugger;
     set((state) => {
@@ -80,19 +79,6 @@ export const useColumnStore = create((set, get) => ({
       };
     });
   },
-  reorderColumns: (startIndex, endIndex) => {
-    set((state) => {
-      const newColumnsOrder = [...get().columnsOrder];
-
-      const [pickedColumn] = newColumnsOrder.splice(startIndex, 1);
-      newColumnsOrder.splice(endIndex, 0, pickedColumn);
-
-      return {
-        ...get(),
-        columnsOrder: [...newColumnsOrder],
-      };
-    });
-  },
   addTaskToColumn: (id, taskId) => {
     if (!get().columns[id]) return;
     set((state) => {
@@ -114,7 +100,6 @@ export const useColumnStore = create((set, get) => ({
     set((state) => {
       return {
         ...get(),
-        columnsOrder: [...get().columnsOrder, id],
         columns: {
           ...get().columns,
           [id]: createColumn(id, title),

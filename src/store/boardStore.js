@@ -38,4 +38,24 @@ export const useBoardStore = create((set) => ({
       };
     });
   },
+  reorderColumns: (boardId, startIndex, endIndex) => {
+    set((state) => {
+      const board = state.boards[boardId];
+      const newColumnsOrder = [...board.columns];
+
+      const [pickedColumn] = newColumnsOrder.splice(startIndex, 1);
+      newColumnsOrder.splice(endIndex, 0, pickedColumn);
+    
+      return {
+        boards: {
+          ...state.boards,
+          [boardId]: {
+            ...state.boards[boardId],
+            columns: newColumnsOrder,
+          },
+        },
+      };
+      
+    });
+  },
 }));

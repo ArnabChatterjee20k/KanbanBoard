@@ -5,15 +5,20 @@ import { DragDropContext } from "react-beautiful-dnd";
 import { useColumnStore } from "./store/columnStore";
 import { COLUMN_DROPPABLE, TASKS_DROPPABLE } from "./constants/DROPPABLE_TYPES";
 import AddCategory from "./components/AddCategory";
+import { useParams } from "react-router-dom";
+import { useBoardStore } from "../../store/boardStore";
 
 export default function Board() {
-  const { columnsOrder, reorderTask, moveTasks, reorderColumns } =
-    useColumnStore((state) => ({
-      columnsOrder: state.columnsOrder,
+  const { reorderTask, moveTasks, reorderColumns } = useColumnStore(
+    (state) => ({
       reorderTask: state.reorderTask,
       moveTasks: state.moveTasks,
       reorderColumns: state.reorderColumns,
-    }));
+    })
+  );
+  const { id } = useParams();
+  const boards = useBoardStore((state) => state.boards);
+  const { columns: columnsOrder } = boards[id];
 
   return (
     <DragDropContext
@@ -47,9 +52,11 @@ export default function Board() {
               {...provided.droppableProps}
               className="flex flex-row gap-9 items-start flex-wrap"
             >
+              {/* Rendering Columns */}
               {columnsOrder.map((columnId, index) => (
                 <CategoryColumn id={columnId} index={index} key={columnId} />
               ))}
+
               <AddCategory />
               {provided.placeholder}
             </div>

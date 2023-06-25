@@ -4,7 +4,7 @@ const boards = {
   1: {
     id: 1,
     title: "new board",
-    columns: [],
+    columns: ["column-1"],
   },
 };
 
@@ -22,6 +22,19 @@ export const useBoardStore = create((set) => ({
     set((state) => {
       return {
         boards: { ...state.boards, [id]: createBoard(id) },
+      };
+    });
+  },
+  addColumn: (boardId, colId) => {
+    set((state) => {
+      return {
+        boards: {
+          ...state.boards,
+          [boardId]: {
+            ...state.boards[boardId],
+            columns: [...state.boards[boardId].columns, colId],
+          },
+        },
       };
     });
   },

@@ -1,5 +1,5 @@
 import { Result } from "antd"
 
-export default function NotFound() {
-  return <Result title="404" subTitle="Board Not Found" status="404"/>
+export default function NotFound({text}) {
+  return <Result title="404" subTitle={text} status="404"/>
 }

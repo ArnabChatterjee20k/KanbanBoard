@@ -1,37 +1,31 @@
 import React from "react";
-import StrictModeDroppable from "./components/StrictModeDroppable";
-import CategoryColumn from "./components/CategoryColumn";
+import StrictModeDroppable from "./StrictModeDroppable";
+import CategoryColumn from "./CategoryColumn";
 import { DragDropContext } from "react-beautiful-dnd";
-import { useColumnStore } from "./store/columnStore";
-import { COLUMN_DROPPABLE, TASKS_DROPPABLE } from "./constants/DROPPABLE_TYPES";
-import AddCategory from "./components/AddCategory";
-import { useParams } from "react-router-dom";
-import { useBoardStore } from "../../store/boardStore";
-import NotFound from "../404/NotFound";
+import { useColumnStore } from "../store/columnStore";
+import {
+  COLUMN_DROPPABLE,
+  TASKS_DROPPABLE,
+} from "../constants/DROPPABLE_TYPES";
+import AddCategory from "./AddCategory";
+import { useBoardStore } from "../../../store/boardStore";
 
-export default function Board() {
+export default function Board({ board }) {
   const { reorderTask, moveTasks } = useColumnStore((state) => ({
     reorderTask: state.reorderTask,
     moveTasks: state.moveTasks,
   }));
-  const { id } = useParams();
-  const { boards, reorderColumns } = useBoardStore((state) => ({
-    boards: state.boards,
+  const { reorderColumns } = useBoardStore((state) => ({
     reorderColumns: state.reorderColumns,
   }));
-
-  const board = boards[id]  
-  if(!board) return <NotFound/>
-
-
-  const { columns: columnsOrder = null } = boards[id];
+  const { columns: columnsOrder = null } = board;
   return (
     <DragDropContext
       onDragEnd={(dndInfo) => {
         // reordering tasks
         const { source, destination, type } = dndInfo;
         if (type === COLUMN_DROPPABLE)
-          reorderColumns(id,source.index, destination.index);
+          reorderColumns(board.id, source.index, destination.index);
         else if (type === TASKS_DROPPABLE) {
           if (source.droppableId === destination.droppableId) {
             reorderTask(source.droppableId, source.index, destination.index);

@@ -12,7 +12,7 @@ export default function Sidebar() {
 
   const {
     params: { id },
-  } = useMatch("/board/:id");
+  } = useMatch("/board/:id/*");
 
   return (
     <Sider breakpoint="lg" className="py-2 min-h-screen">

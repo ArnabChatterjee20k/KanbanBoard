@@ -5,7 +5,7 @@ import { useBoardStore } from "../../../store/boardStore";
 import { useParams } from "react-router-dom";
 
 export default function AddCategory() {
-  const { id } = useParams();
+  const { boardId } = useParams();
 
   const { addColumn } = useColumnStore((state) => ({
     addColumn: state.addColumn,
@@ -14,7 +14,6 @@ export default function AddCategory() {
   const addColumnToBoard = useBoardStore((state) => state.addColumn);
   const addNewCategory = () => {
     const colId = crypto.randomUUID();
-    const boardId = id;
     addColumn(colId);
     addColumnToBoard(boardId, colId);
   };

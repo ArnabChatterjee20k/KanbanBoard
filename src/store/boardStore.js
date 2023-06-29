@@ -25,6 +25,16 @@ export const useBoardStore = create((set) => ({
       };
     });
   },
+  updateBoard:(id,title)=>{
+    set(state=>{
+      return {
+        boards:{...state.boards,[id]:{
+          ...state.boards[id],
+          title
+        }}
+      }
+    })
+  },
   addColumn: (boardId, colId) => {
     set((state) => {
       return {

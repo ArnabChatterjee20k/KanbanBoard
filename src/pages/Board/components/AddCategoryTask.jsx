@@ -2,6 +2,7 @@ import { PlusOutlined } from "@ant-design/icons";
 import { Button } from "antd";
 import { useTaskStore } from "../store/taskStore";
 import { useColumnStore } from "../store/columnStore";
+import { useNavigate } from "react-router";
 
 export default function AddCategory({ id }) {
   const { addTask } = useTaskStore((state) => ({
@@ -12,11 +13,14 @@ export default function AddCategory({ id }) {
     addTaskToColumn: state.addTaskToColumn,
   }));
 
+  const nav = useNavigate()
+
   function createTask() {
     const taskId = crypto.randomUUID();
+    addTask(taskId, "new task");
     document.startViewTransition(() => {
-      addTask(taskId, "catlsdfj");
       addTaskToColumn(id, taskId);
+      nav(`/tasks/${taskId}`)
     });
   }
 

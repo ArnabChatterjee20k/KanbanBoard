@@ -49,4 +49,26 @@ export const useTaskStore = create(devtools((set, get) => ({
       },
     }));
   },
+  updateTaskContent:(taskId,content)=>{
+    set((state) => ({
+      tasks: {
+        ...state.tasks,
+        [taskId]: {
+          ...state.tasks[taskId],
+          content
+        }
+      },
+    }));
+  },
+  updateTaskDescription:(taskId,description)=>{
+    set((state) => ({
+      tasks: {
+        ...state.tasks,
+        [taskId]: {
+          ...state.tasks[taskId],
+          description
+        }
+      },
+    }));
+  }
 })));

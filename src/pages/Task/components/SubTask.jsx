@@ -1,6 +1,7 @@
 import { Checkbox } from "antd";
 import React from "react";
 import { useSubTaskStore } from "../store/subTaskStore";
+import EditableText from "./EditableText";
 
 export default function SubTask({ id }) {
   const { subTask, toggleSubTasks } = useSubTaskStore((state) => ({
@@ -8,14 +9,12 @@ export default function SubTask({ id }) {
     toggleSubTasks: state.toggleSubTasks,
   }));
   return (
-    <Checkbox checked={subTask.completed} onChange={() => toggleSubTasks(id)}>
-      <p
-        className={`${
-          subTask.completed && "line-through text-gray-400"
-        } text-base`}
-      >
-        {subTask.content}
-      </p>
-    </Checkbox>
+    <div className="flex gap-2">
+      <Checkbox
+        checked={subTask.completed}
+        onChange={() => toggleSubTasks(id)}
+      />
+      <EditableText id={id}/>
+    </div>
   );
 }

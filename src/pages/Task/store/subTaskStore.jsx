@@ -30,13 +30,13 @@ export const useSubTaskStore = create(
     },
     updateSubTasks: (id, content) => {
       set((state) => {
-        return {
+        return {subTasks:{
           ...state.subTasks,
           [id]: {
             ...state.subTasks[id],
             content,
           },
-        };
+        }};
       });
     },
     toggleSubTasks: (id) => {

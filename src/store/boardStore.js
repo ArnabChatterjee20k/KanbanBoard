@@ -1,4 +1,5 @@
 import { create } from "zustand";
+import api from "../api/API";
 
 const boards = {
   1: {
@@ -17,7 +18,19 @@ const createBoard = (id) => {
 };
 
 export const useBoardStore = create((set) => ({
-  boards,
+  boards: {},
+  isLoading: false,
+  isError: false,
+  error: null,
+  setBoard: async (userId) => {
+    set({ isLoading: true });
+    try {
+      const boards = await api.getAllBoards(userId);
+      set({ boards, isLoading: false });
+    } catch (error) {
+      set({ error, isError: true });
+    }
+  },
   addBoard: (id) => {
     set((state) => {
       return {
@@ -25,15 +38,18 @@ export const useBoardStore = create((set) => ({
       };
     });
   },
-  updateBoard:(id,title)=>{
-    set(state=>{
+  updateBoard: (id, title) => {
+    set((state) => {
       return {
-        boards:{...state.boards,[id]:{
-          ...state.boards[id],
-          title
-        }}
-      }
-    })
+        boards: {
+          ...state.boards,
+          [id]: {
+            ...state.boards[id],
+            title,
+          },
+        },
+      };
+    });
   },
   addColumn: (boardId, colId) => {
     set((state) => {
@@ -55,7 +71,7 @@ export const useBoardStore = create((set) => ({
 
       const [pickedColumn] = newColumnsOrder.splice(startIndex, 1);
       newColumnsOrder.splice(endIndex, 0, pickedColumn);
-    
+
       return {
         boards: {
           ...state.boards,
@@ -65,7 +81,6 @@ export const useBoardStore = create((set) => ({
           },
         },
       };
-      
     });
   },
 }));

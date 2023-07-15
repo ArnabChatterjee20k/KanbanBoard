@@ -1,4 +1,4 @@
-import { Client, Databases, ID } from "appwrite";
+import { Client, Databases, ID, Query } from "appwrite";
 import config from "./config";
 
 class API {
@@ -15,10 +15,12 @@ class API {
 
   async getAllBoards(userId) {
     try {
-      const res = await this.db.listDocuments(this.dbId, this.boardsId);
-      console.log(res);
+      const res = await this.db.listDocuments(this.dbId, this.boardsId, [
+        Query.equal("user_id", [userId]),
+      ]);
+      return res.documents;
     } catch (error) {
-      console.error("Error fetching documents:", error);
+      throw new Error({ cause: error });
     }
   }
 

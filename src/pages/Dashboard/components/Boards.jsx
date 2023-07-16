@@ -11,8 +11,8 @@ export default function Boards() {
   if (isLoading) return <Loader message="Fetching Boards..." />;
   return (
     <section className="grid m-auto p-8 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
-      {Object.entries(boards).map(([key, { title, board_id }]) => (
-        <BoardCard board_id={board_id} boardTitle={title} key={board_id} />
+      {Object.entries(boards).map(([key, { title, $id }]) => (
+        <BoardCard board_id={$id} boardTitle={title} key={$id} />
       ))}
     </section>
   );

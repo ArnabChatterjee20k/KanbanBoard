@@ -1,5 +1,6 @@
 import { create } from "zustand";
 import api from "../api/API";
+import { devtools } from "zustand/middleware";
 
 const boards = {
   1: {
@@ -17,7 +18,7 @@ const createBoard = (id) => {
   };
 };
 
-export const useBoardStore = create((set) => ({
+export const useBoardStore = create(devtools((set) => ({
   boards: {},
   isLoading: false,
   isError: false,
@@ -25,12 +26,18 @@ export const useBoardStore = create((set) => ({
   setBoard: async (userId) => {
     set({ isLoading: true });
     try {
-      const boards = await api.getAllBoards(userId);
+      const res = await api.getAllBoards(userId);
+      console.log({res});
+      const boards = res.reduce((newBoards, board) => {
+        newBoards[board.board_id] = board;
+        return newBoards
+      }, {});
       set({ boards, isLoading: false });
     } catch (error) {
       set({ error, isError: true });
     }
   },
+
   addBoard: (id) => {
     set((state) => {
       return {
@@ -83,4 +90,4 @@ export const useBoardStore = create((set) => ({
       };
     });
   },
-}));
+})));

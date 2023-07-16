@@ -1,4 +1,5 @@
 import { create } from "zustand";
+import api from "../../../api/API";
 
 const columns = {
   "column-1": {
@@ -29,7 +30,10 @@ function createColumn(id, title) {
 const columnsOrder = ["column-1", "column-2", "column-3"];
 
 export const useColumnStore = create((set, get) => ({
-  columns,
+  columns: {},
+  setCols: async (user_id, board_id) => {
+    await api.getAllCols(user_id, board_id);
+  },
   reorderTask: (columnId, startIndex, endIndex) => {
     // debugger;
     set((state) => {
@@ -96,7 +100,7 @@ export const useColumnStore = create((set, get) => ({
       };
     });
   },
-  addColumn: (id=crypto.randomUUID(), title = "Category") => {
+  addColumn: (id = crypto.randomUUID(), title = "Category") => {
     set((state) => {
       return {
         ...get(),

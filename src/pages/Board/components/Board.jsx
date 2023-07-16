@@ -11,14 +11,18 @@ import AddCategory from "./AddCategory";
 import { useBoardStore } from "../../../store/boardStore";
 
 export default function Board({ board }) {
-  const { reorderTask, moveTasks } = useColumnStore((state) => ({
+  const { reorderTask, moveTasks, setCols } = useColumnStore((state) => ({
     reorderTask: state.reorderTask,
     moveTasks: state.moveTasks,
+    setCols: state.setCols,
   }));
+  console.log({board});
+
   const { reorderColumns } = useBoardStore((state) => ({
     reorderColumns: state.reorderColumns,
   }));
-  const { columns: columnsOrder = null } = board;
+  const { order: columnsOrder } = board;
+
   return (
     <DragDropContext
       onDragEnd={(dndInfo) => {
@@ -52,7 +56,7 @@ export default function Board({ board }) {
               className="flex flex-row gap-9 items-start flex-wrap"
             >
               {/* Rendering Columns */}
-              {columnsOrder.map((columnId, index) => (
+              {(columnsOrder || []).map((columnId, index) => (
                 <CategoryColumn id={columnId} index={index} key={columnId} />
               ))}
 

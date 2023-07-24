@@ -8,6 +8,7 @@ import { useBoardStore } from "../../store/boardStore";
 import TitleEditable from "../../components/TitleEditable";
 import useGetBoard from "./services/useGetBoard";
 import { useUser } from "@clerk/clerk-react";
+import api from "../../api/API";
 
 export default function BoardPage() {
   const { boardId } = useParams();
@@ -24,6 +25,7 @@ export default function BoardPage() {
 
   function handleBoardTitle(title) {
     updateBoard(boardId, title);
+    api.updateBoardTitle(boardId,user.id,title)
   }
 
   return (

@@ -10,8 +10,8 @@ export default function useFetcher(queryFunc, keys = []) {
       const res = await queryFunc();
       setData(res);
     } catch (error) {
-        console.log({error});
-      setIsError(true);
+        setIsError(true);
+        throw new Error(error)
     }
     setIsLoading(false);
   }

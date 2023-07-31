@@ -2,20 +2,19 @@ import { PlusOutlined } from "@ant-design/icons";
 import { Button } from "antd";
 import { useColumnStore } from "../store/columnStore";
 import { useBoardStore } from "../../../store/boardStore";
-import { useParams } from "react-router-dom";
+import api from "../../../api/API";
+import useBoardAdminDetails from "../../../hooks/useGetBoardAdminDetails";
 
 export default function AddCategory() {
-  const { boardId } = useParams();
-
-  const { addColumn } = useColumnStore((state) => ({
-    addColumn: state.addColumn,
-  }));
-
-  const addColumnToBoard = useBoardStore((state) => state.addColumn);
-  const addNewCategory = () => {
-    const colId = crypto.randomUUID();
-    addColumn(colId);
-    addColumnToBoard(boardId, colId);
+  const { boardId, userId } = useBoardAdminDetails();
+  const addColToBoard = useColumnStore((state) => state.addColumn);
+  const updateColOrder = useBoardStore((state) => state.addColumn);
+  const addNewCategory = async () => {
+    const colId = await api.addColumnToBoard(userId,boardId);
+    if(colId){
+      addColToBoard(colId, boardId);
+      updateColOrder(colId, boardId);
+    }
   };
   return (
     <Button

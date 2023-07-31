@@ -9,6 +9,9 @@ import {
 } from "../constants/DROPPABLE_TYPES";
 import AddCategory from "./AddCategory";
 import { useBoardStore } from "../../../store/boardStore";
+import useGetAllCols from "../../../services/useGetAllCols";
+import useBoardAdminDetails from "../../../hooks/useGetBoardAdminDetails";
+import Loader from "../../../components/Loader";
 
 export default function Board({ board }) {
   const { reorderTask, moveTasks, setCols } = useColumnStore((state) => ({
@@ -16,13 +19,15 @@ export default function Board({ board }) {
     moveTasks: state.moveTasks,
     setCols: state.setCols,
   }));
-  console.log({board});
 
   const { reorderColumns } = useBoardStore((state) => ({
     reorderColumns: state.reorderColumns,
   }));
   const { order: columnsOrder } = board;
 
+  const { userId, boardId } = useBoardAdminDetails();
+  const { isLoading } = useGetAllCols(boardId, userId);
+  if (isLoading) return <Loader message="Loading Categories...." />;
   return (
     <DragDropContext
       onDragEnd={(dndInfo) => {
@@ -36,7 +41,7 @@ export default function Board({ board }) {
           } else
             moveTasks(
               source.droppableId,
-              destination.droppableId,
+              +destination.droppableId,
               source.index,
               destination.index
             );

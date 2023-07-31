@@ -1,5 +1,4 @@
 import { create } from "zustand";
-import { devtools } from "zustand/middleware";
 
 const tasks = {
   "task-1": {
@@ -28,7 +27,7 @@ const tasks = {
   },
 };
 
-export const useTaskStore = create(devtools((set, get) => ({
+export const useTaskStore = create((set, get) => ({
   tasks: tasks,
   getTask: () => {
     return get();
@@ -71,4 +70,4 @@ export const useTaskStore = create(devtools((set, get) => ({
       },
     }));
   }
-})));
+}));

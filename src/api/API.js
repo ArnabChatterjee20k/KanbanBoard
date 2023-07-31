@@ -1,5 +1,6 @@
 import { Client, Databases, ID, Query } from "appwrite";
 import config from "./config";
+import { badAuthError, notFoundError } from "../utils/errors";
 
 class API {
   constructor() {
@@ -44,18 +45,7 @@ class API {
     }
   }
 
-  async getAllCols(user_id, board_id) {
-    try {
-      const verify = await this.verifyUserOfBoard(user_id, board_id);
-      console.log({ verify });
-      const res = await this.db.listDocuments(this.dbId, this.colId, [
-        Query.equal("board_id", [board_id]),
-      ]);
-    } catch (error) {}
-  }
-
   async verifyUserAndGetBoard(user_id, board_db_id) {
-    console.log({ board_db_id });
     const res = await this.db.getDocument(
       this.dbId,
       this.boardsId,
@@ -89,23 +79,53 @@ class API {
     );
     if (auth) {
       const { order } = boardDetails;
-      const col_id = await this.addColumn();
+      const col_id = await this.#addColumn(board_db_id);
       await this.db.updateDocument(this.dbId, this.boardsId, board_db_id, {
         order: [...order, col_id],
       });
       return col_id;
     }
-    alert("Not authen");
+    throw badAuthError();
   }
 
-  async addColumn() {
+  async #addColumn(board_db_id) {
     const res = await this.db.createDocument(
       this.dbId,
       this.colId,
       ID.unique(),
-      { title: "Category" }
+      { title: "Category", board_id: board_db_id }
     );
     return res.$id;
+  }
+
+  async fetchAllColumns(user_id, board_db_id) {
+    const { auth, boardDetails } = await this.verifyUserAndGetBoard(
+      user_id,
+      board_db_id
+    );
+    // debugger
+    try {
+      if (auth) {
+        const cols = await this.db.listDocuments(this.dbId, this.colId, [
+          Query.equal("board_id", [board_db_id]),
+        ]);
+        return cols.documents
+      }
+      throw badAuthError();  
+    } catch (error) {
+      console.log({error,board_db_id});
+    }
+  }
+
+  async fetchColumn(user_id, board_db_id, col_id) {
+    const { auth, boardDetails } = await this.verifyUserAndGetBoard(
+      user_id,
+      board_db_id
+    );
+    if (auth) {
+      return await this.db.getDocument(this.dbId, this.colId, col_id);
+    }
+    throw badAuthError();
   }
 }
 

@@ -1,5 +1,6 @@
 import { create } from "zustand";
 import api from "../../../api/API";
+import { devtools } from "zustand/middleware";
 
 const columns = {
   "column-1": {
@@ -29,86 +30,92 @@ function createColumn(id, title) {
 
 const columnsOrder = ["column-1", "column-2", "column-3"];
 
-export const useColumnStore = create((set, get) => ({
-  columns: {},
-  setCols: async (user_id, board_id) => {
-    await api.getAllCols(user_id, board_id);
-  },
-  reorderTask: (columnId, startIndex, endIndex) => {
-    // debugger;
-    set((state) => {
-      const col = get().columns[columnId];
-      const newTasks = [...col.taskIds];
+export const useColumnStore = create(
+  devtools((set, get) => ({
+    columns: {},
+    setCols: async (cols) => {
+      const columns = cols.reduce((newCols, col) => {
+        newCols[col.$id] = col;
+        return newCols;
+      }, {});
+      set({ columns });
+    },
+    reorderTask: (columnId, startIndex, endIndex) => {
+      // debugger;
+      set((state) => {
+        const col = get().columns[columnId];
+        const newTasks = [...col.taskIds];
 
-      const [pickedTask] = newTasks.splice(startIndex, 1);
+        const [pickedTask] = newTasks.splice(startIndex, 1);
 
-      newTasks.splice(endIndex, 0, pickedTask);
+        newTasks.splice(endIndex, 0, pickedTask);
 
-      const newCol = { ...col, taskIds: newTasks };
+        const newCol = { ...col, taskIds: newTasks };
 
-      return {
-        ...get(),
-        columns: {
-          ...get().columns,
-          [newCol.id]: newCol,
-        },
-      };
-    });
-  },
-  moveTasks: (startColumnId, endColumnId, startIndex, endIndex) => {
-    set((state) => {
-      const startCol = get().columns[startColumnId];
-      const endCol = get().columns[endColumnId];
-
-      const startColTasks = [...startCol.taskIds];
-      const endColTasks = [...endCol.taskIds];
-
-      const [pickedTask] = startColTasks.splice(startIndex, 1);
-      endColTasks.splice(endIndex, 0, pickedTask);
-
-      //   debugger;
-      return {
-        ...get(),
-        columns: {
-          ...get().columns,
-          [startCol.id]: {
-            ...startCol,
-            taskIds: [...startColTasks],
+        return {
+          ...get(),
+          columns: {
+            ...get().columns,
+            [newCol.id]: newCol,
           },
-          [endCol.id]: {
-            ...endCol,
-            taskIds: [...endColTasks],
+        };
+      });
+    },
+    moveTasks: (startColumnId, endColumnId, startIndex, endIndex) => {
+      set((state) => {
+        const startCol = get().columns[startColumnId];
+        const endCol = get().columns[endColumnId];
+
+        const startColTasks = [...startCol.taskIds];
+        const endColTasks = [...endCol.taskIds];
+
+        const [pickedTask] = startColTasks.splice(startIndex, 1);
+        endColTasks.splice(endIndex, 0, pickedTask);
+
+        //   debugger;
+        return {
+          ...get(),
+          columns: {
+            ...get().columns,
+            [startCol.id]: {
+              ...startCol,
+              taskIds: [...startColTasks],
+            },
+            [endCol.id]: {
+              ...endCol,
+              taskIds: [...endColTasks],
+            },
           },
-        },
-      };
-    });
-  },
-  addTaskToColumn: (id, taskId) => {
-    if (!get().columns[id]) return;
-    set((state) => {
-      const col = state.columns[id];
-      const tasks = [...col.taskIds, taskId];
-      return {
-        ...get(),
-        columns: {
-          ...state.columns,
-          [id]: {
-            ...state.columns[id],
-            taskIds: tasks,
+        };
+      });
+    },
+    addTaskToColumn: (id, taskId) => {
+      if (!get().columns[id]) return;
+      set((state) => {
+        const col = state.columns[id];
+        const tasks = [...col.taskIds, taskId];
+        return {
+          ...get(),
+          columns: {
+            ...state.columns,
+            [id]: {
+              ...state.columns[id],
+              taskIds: tasks,
+            },
           },
-        },
-      };
-    });
-  },
-  addColumn: (id = crypto.randomUUID(), title = "Category") => {
-    set((state) => {
-      return {
-        ...get(),
-        columns: {
-          ...get().columns,
-          [id]: createColumn(id, title),
-        },
-      };
-    });
-  },
-}));
+        };
+      });
+    },
+    addColumn: (id, title) => {
+      set((state) => {
+        return {
+          ...get(),
+          columns: {
+            ...get().columns,
+            [id]: createColumn(id, title),
+          },
+        };
+      });
+    },
+  }))
+);

@@ -1,5 +1,4 @@
 import { create } from "zustand";
-import { devtools } from "zustand/middleware";
 const subTasks = {
   1: {
     id: 1,
@@ -16,7 +15,7 @@ const subTaskStructure = (id, content) => {
   return { id, content, completed: false };
 };
 export const useSubTaskStore = create(
-  devtools((set) => ({
+  (set) => ({
     subTasks,
     createSubTasks: (id, content) => {
       set((state) => {
@@ -52,5 +51,5 @@ export const useSubTaskStore = create(
         };
       });
     },
-  }))
+  })
 );

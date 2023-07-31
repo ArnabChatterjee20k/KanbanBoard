@@ -31,7 +31,7 @@ export default function BoardCard({ boardTitle,board_id }) {
     >
       <Meta
         avatar={<Avatar src={avatar} />}
-        title={<Link className="hover:text-[#52c41a]" to={`/board/${board_id}`}>{boardTitle}</Link>}
+        title={<Link className="hover:text-[#52c41a]" to={`board/${board_id}`}>{boardTitle}</Link>}
         description="This is the description"
       />
     </Card>

@@ -7,7 +7,7 @@ import AuthRequired from "../components/AuthRequired";
 export default function BoardRouter() {
   return (
     <Routes>
-      <Route path="board">
+      <Route path="user/:userId/board">
         <Route
           path=":boardId"
           element={

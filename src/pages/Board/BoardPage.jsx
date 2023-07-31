@@ -14,7 +14,9 @@ export default function BoardPage() {
   const { boardId } = useParams();
   const { boards, updateBoard } = useBoardStore((state) => ({
     updateBoard: state.updateBoard,
+    boards:state.boards
   }));
+  console.log({boards});
   const { user } = useUser();
 
   const {data,isLoading} = useGetBoard(user.id, boardId);

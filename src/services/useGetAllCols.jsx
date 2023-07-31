@@ -1,24 +1,18 @@
-import { useEffect } from "react";
-import { useBoardStore } from "../store/boardStore";
+import api from "../api/API";
+import useFetcher from "../hooks/useFetcher";
+import { useColumnStore } from "../pages/Board/store/columnStore";
 
-export default function useGetAllCols(board_id) {
-  const { setBoards, isLoading, isError, boards, error } = useBoardStore(
-    (state) => {
-      return {
-        setBoards: state.setBoard,
-        boards: state.boards,
-        isLoading: state.isLoading,
-        isError: state.isError,
-        error: state.error,
-      };
+export default function useGetAllCols(board_id, user_id) {
+  const setCols = useColumnStore((state) => state.setCols);
+  const cols = useColumnStore((state) => state.columns);
+  async function queryFunc() {
+    if (Object.keys(cols).length === 0) {
+      const columns = await api.fetchAllColumns(user_id, board_id);
+      console.log("🚀 ~ file: useGetAllCols.jsx:11 ~ queryFunc ~ columns:", columns)
+      setCols(columns);
+      return columns;
     }
-  );
-
-  useEffect(() => {
-    if(Object.keys(boards).length===0){
-      setBoards(userId);
-    }
-  }, [userId]);
-
-  return { boards, isError, isLoading };
+    return cols
+  }
+  return useFetcher(queryFunc, [user_id, board_id]);
 }

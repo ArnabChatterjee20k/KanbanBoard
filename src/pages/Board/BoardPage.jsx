@@ -42,7 +42,7 @@ export default function BoardPage() {
             key={boardId}
           />
         </div>
-        <Board board={data?.boardDetails} />
+        {Object.keys(boards).length && <Board board={boards[boardId]} />}
       </Content>
     </>
   );

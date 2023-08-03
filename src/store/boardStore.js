@@ -1,5 +1,6 @@
 import { create } from "zustand";
 import api from "../api/API";
+import { devtools } from "zustand/middleware";
 // import { devtools } from "zustand/middleware";
 
 const boards = {
@@ -72,19 +73,22 @@ export const useBoardStore = create((set, get) => ({
     });
   },
   reorderColumns: (boardId, startIndex, endIndex) => {
+    const board = get().boards[boardId];
+    const newColumnsOrder = [...board.order];
+
+    const [pickedColumn] = newColumnsOrder.splice(startIndex, 1);
+    newColumnsOrder.splice(endIndex, 0, pickedColumn);
+    get().setOrder(boardId,newColumnsOrder)
+    return get().boards[boardId].order;
+  },
+  setOrder: (boardId,order) => {
     set((state) => {
-      const board = state.boards[boardId];
-      const newColumnsOrder = [...board.columns];
-
-      const [pickedColumn] = newColumnsOrder.splice(startIndex, 1);
-      newColumnsOrder.splice(endIndex, 0, pickedColumn);
-
       return {
         boards: {
           ...state.boards,
           [boardId]: {
             ...state.boards[boardId],
-            columns: newColumnsOrder,
+            order: order,
           },
         },
       };

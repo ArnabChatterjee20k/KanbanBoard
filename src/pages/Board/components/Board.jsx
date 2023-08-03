@@ -9,33 +9,54 @@ import {
 } from "../constants/DROPPABLE_TYPES";
 import AddCategory from "./AddCategory";
 import { useBoardStore } from "../../../store/boardStore";
-import useGetAllCols from "../../../services/useGetAllCols";
 import useBoardAdminDetails from "../../../hooks/useGetBoardAdminDetails";
 import Loader from "../../../components/Loader";
+import useGetAllCols from "../../../services/useGetAllCols";
+import api from "../../../api/API";
+import useMessage from "../../../hooks/useMessage";
 
 export default function Board({ board }) {
-  const { reorderTask, moveTasks, setCols } = useColumnStore((state) => ({
+  const { reorderTask, moveTasks } = useColumnStore((state) => ({
     reorderTask: state.reorderTask,
     moveTasks: state.moveTasks,
-    setCols: state.setCols,
   }));
 
-  const { reorderColumns } = useBoardStore((state) => ({
+  const { reorderColumns, setOrder } = useBoardStore((state) => ({
     reorderColumns: state.reorderColumns,
+    setOrder: state.setOrder,
   }));
+
+  const [message, messageHolder] = useMessage();
+
   const { order: columnsOrder } = board;
 
   const { userId, boardId } = useBoardAdminDetails();
-  const { isLoading } = useGetAllCols(boardId, userId);
+  const { isLoading, data, error } = useGetAllCols(boardId, userId);
+  const [isError, errorCondition] = error;
+  if (isError) throw new Error(errorCondition);
   if (isLoading) return <Loader message="Loading Categories...." />;
+
   return (
     <DragDropContext
       onDragEnd={(dndInfo) => {
         // reordering tasks
         const { source, destination, type } = dndInfo;
-        if (type === COLUMN_DROPPABLE)
-          reorderColumns(board.id, source.index, destination.index);
-        else if (type === TASKS_DROPPABLE) {
+        if (type === COLUMN_DROPPABLE) {
+          const prevOrder = columnsOrder;
+          console.log({ prevOrder });
+          const newOrder = reorderColumns(
+            boardId,
+            source.index,
+            destination.index
+          );
+          api.reOrderCol(boardId, newOrder).catch(() => {
+            message.error("Reorder Failed");
+            setOrder(boardId, prevOrder);
+            setTimeout(() => {
+              message.destroy();
+            }, 3000);
+          });
+        } else if (type === TASKS_DROPPABLE) {
           if (source.droppableId === destination.droppableId) {
             reorderTask(source.droppableId, source.index, destination.index);
           } else
@@ -60,6 +81,7 @@ export default function Board({ board }) {
               {...provided.droppableProps}
               className="flex flex-row gap-9 items-start flex-wrap"
             >
+              {messageHolder}
               {/* Rendering Columns */}
               {(columnsOrder || []).map((columnId, index) => (
                 <CategoryColumn id={columnId} index={index} key={columnId} />

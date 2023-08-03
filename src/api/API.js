@@ -103,17 +103,16 @@ class API {
       user_id,
       board_db_id
     );
-    // debugger
     try {
       if (auth) {
         const cols = await this.db.listDocuments(this.dbId, this.colId, [
           Query.equal("board_id", [board_db_id]),
         ]);
-        return cols.documents
+        return cols.documents;
       }
-      throw badAuthError();  
+      throw badAuthError();
     } catch (error) {
-      console.log({error,board_db_id});
+      console.log({ error, board_db_id });
     }
   }
 
@@ -126,6 +125,13 @@ class API {
       return await this.db.getDocument(this.dbId, this.colId, col_id);
     }
     throw badAuthError();
+  }
+
+  async reOrderCol(board_db_id, newOrder) {
+    const res = await this.db.updateDocument(this.dbId, this.boardsId,board_db_id, {
+      order: newOrder,
+    });
+    console.log({res});
   }
 }
 

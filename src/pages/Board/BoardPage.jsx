@@ -16,7 +16,6 @@ export default function BoardPage() {
     updateBoard: state.updateBoard,
     boards:state.boards
   }));
-  console.log({boards});
   const { user } = useUser();
 
   const {data,isLoading} = useGetBoard(user.id, boardId);

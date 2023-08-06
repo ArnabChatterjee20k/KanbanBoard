@@ -127,12 +127,42 @@ class API {
     throw badAuthError();
   }
 
-  async reOrderCol(board_db_id, newOrder) {
-    const res = await this.db.updateDocument(this.dbId, this.boardsId,board_db_id, {
-      order: newOrder,
-    });
-    console.log({res});
+  reOrderCol() {
+    const recentColumn = { current: [] };
+    const db = this.db;
+    const dbId = this.dbId;
+    const boardsId = this.boardsId;
+  
+    // Use closure to share timeoutId among all instances of reOrderColDriver
+    let timeoutId;
+  
+    async function reOrderColDriver(board_db_id, newOrder) {
+      recentColumn.current = newOrder;
+  
+      // Clear previous timeout (if any) to avoid multiple calls to updateDocument
+      if (timeoutId) {
+        clearTimeout(timeoutId);
+      }
+  
+      // Set a new timeout for 2000 ms
+      timeoutId = setTimeout(async () => {
+        try {
+          if (recentColumn.current.length !== 0) {
+            console.log("🚀 ~ file: API.js:134 ~ API ~ reOrderCol ~ dbId:", dbId, boardsId);
+            const res = await db.updateDocument(dbId, boardsId, board_db_id, { order: newOrder });
+            console.log({ res });
+          }
+        } catch (error) {
+          console.error("Error during reOrderColDriver:", error);
+        }
+      }, 3000);
+    }
+  
+    return reOrderColDriver;
   }
+  
+  
+  
 }
 
 const api = new API();

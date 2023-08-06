@@ -15,6 +15,9 @@ import useGetAllCols from "../../../services/useGetAllCols";
 import api from "../../../api/API";
 import useMessage from "../../../hooks/useMessage";
 
+// declaring it outside the component so the inner function does not get created everytime and debounce occur perfectly
+const reOrderColApiAction = api.reOrderCol()
+
 export default function Board({ board }) {
   const { reorderTask, moveTasks } = useColumnStore((state) => ({
     reorderTask: state.reorderTask,
@@ -43,13 +46,13 @@ export default function Board({ board }) {
         const { source, destination, type } = dndInfo;
         if (type === COLUMN_DROPPABLE) {
           const prevOrder = columnsOrder;
-          console.log({ prevOrder });
           const newOrder = reorderColumns(
             boardId,
             source.index,
             destination.index
           );
-          api.reOrderCol(boardId, newOrder).catch(() => {
+          console.log({newOrder});
+          reOrderColApiAction(boardId, newOrder).catch(() => {
             message.error("Reorder Failed");
             setOrder(boardId, prevOrder);
             setTimeout(() => {

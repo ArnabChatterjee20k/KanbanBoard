@@ -117,5 +117,20 @@ export const useColumnStore = create(
         };
       });
     },
+
+    updateColumnTitle: (id, title) => {
+      set((state) => {
+        return {
+          ...state,
+          columns: {
+            ...state.columns,
+            [id]: {
+              ...state.columns[id],
+              title,
+            },
+          },
+        };
+      });
+    },
   }))
 );

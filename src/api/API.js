@@ -132,37 +132,51 @@ class API {
     const db = this.db;
     const dbId = this.dbId;
     const boardsId = this.boardsId;
-  
+
     // Use closure to share timeoutId among all instances of reOrderColDriver
     let timeoutId;
-  
+
     async function reOrderColDriver(board_db_id, newOrder) {
-      recentColumn.current = newOrder;
-  
-      // Clear previous timeout (if any) to avoid multiple calls to updateDocument
-      if (timeoutId) {
-        clearTimeout(timeoutId);
-      }
-  
-      // Set a new timeout for 2000 ms
-      timeoutId = setTimeout(async () => {
-        try {
-          if (recentColumn.current.length !== 0) {
-            console.log("🚀 ~ file: API.js:134 ~ API ~ reOrderCol ~ dbId:", dbId, boardsId);
-            const res = await db.updateDocument(dbId, boardsId, board_db_id, { order: newOrder });
-            console.log({ res });
-          }
-        } catch (error) {
-          console.error("Error during reOrderColDriver:", error);
+      return new Promise((resolve, reject) => {
+        recentColumn.current = newOrder;
+
+        // Clear previous timeout (if any) to avoid multiple calls to updateDocument
+        if (timeoutId) {
+          clearTimeout(timeoutId);
         }
-      }, 3000);
+
+        // Set a new timeout for 2000 ms
+        timeoutId = setTimeout(async () => {
+          try {
+            if (recentColumn.current?.length !== 0) {
+              const res = await db.updateDocument(dbId, boardsId, board_db_id, {
+                order: newOrder,
+              });
+              console.log({ res });
+              resolve(res); // Resolve the Promise with the result
+            } else {
+              // If there's nothing to update, resolve the Promise with null or an appropriate value
+              resolve(null);
+            }
+          } catch (error) {
+            reject(error); // Reject the Promise with the error
+          }
+        }, 3000);
+      });
     }
-  
+
     return reOrderColDriver;
   }
-  
-  
-  
+
+  async updateColumnTitle(col_id, newTitle) {
+    try {
+      return await this.db.updateDocument(this.dbId, this.colId, col_id, {
+        title: newTitle,
+      });
+    } catch (error) {
+      return Promise.reject(error)
+    }
+  }
 }
 
 const api = new API();

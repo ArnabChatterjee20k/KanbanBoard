@@ -52,7 +52,9 @@ export default function Board({ board }) {
             destination.index
           );
           console.log({newOrder});
-          reOrderColApiAction(boardId, newOrder).catch(() => {
+          reOrderColApiAction(boardId, newOrder).catch((e) => {
+            console.error({e})
+            alert("error")
             message.error("Reorder Failed");
             setOrder(boardId, prevOrder);
             setTimeout(() => {

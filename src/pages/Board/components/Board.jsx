@@ -14,6 +14,7 @@ import Loader from "../../../components/Loader";
 import useGetAllCols from "../../../services/useGetAllCols";
 import api from "../../../api/API";
 import useMessage from "../../../hooks/useMessage";
+import useGetAllTasks from "../../../services/useGetAllTasks";
 
 // declaring it outside the component so the inner function does not get created everytime and debounce occur perfectly
 const reOrderColApiAction = api.reOrderCol()
@@ -34,10 +35,11 @@ export default function Board({ board }) {
   const { order: columnsOrder } = board;
 
   const { userId, boardId } = useBoardAdminDetails();
-  const { isLoading, data, error } = useGetAllCols(boardId, userId);
-  const [isError, errorCondition] = error;
+  const { isLoading:isColsLoading, data, error:colsError } = useGetAllCols(boardId, userId);
+  const {isLoading:isTasksLoading,error:tasksError} = useGetAllTasks(boardId)
+  const [isError, errorCondition] = colsError || tasksError;
   if (isError) throw new Error(errorCondition);
-  if (isLoading) return <Loader message="Loading Categories...." />;
+  if (isColsLoading || isTasksLoading) return <Loader message="Loading Categories...." />;
 
   return (
     <DragDropContext

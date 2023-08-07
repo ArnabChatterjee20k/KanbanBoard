@@ -93,14 +93,14 @@ export const useColumnStore = create(
       if (!get().columns[id]) return;
       set((state) => {
         const col = state.columns[id];
-        const tasks = [...col.taskIds, taskId];
+        const tasks = [...col.task_order, taskId];
         return {
           ...get(),
           columns: {
             ...state.columns,
             [id]: {
               ...state.columns[id],
-              taskIds: tasks,
+              task_order : tasks,
             },
           },
         };

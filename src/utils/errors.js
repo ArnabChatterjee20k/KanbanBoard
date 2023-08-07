@@ -9,3 +9,7 @@ export function badAuthError(){
 export function notFoundError(){
     return error("not found")
 }
+
+export function someProblemsOccured(){
+    return error("Some Problems Occured!")
+}

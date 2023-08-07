@@ -6,6 +6,7 @@ import { useTaskStore } from "../store/taskStore";
 import TitleEditable from "../../../components/TitleEditable";
 import api from "../../../api/API";
 import useMessage from "antd/es/message/useMessage";
+import useGetAllTasks from "../../../services/useGetAllTasks";
 
 export default function TasksList({ id }) {
   const [message, messageHolder] = useMessage();
@@ -15,12 +16,13 @@ export default function TasksList({ id }) {
   }));
 
   const currentColumn = columns[id];
-  const orderedTasks = columns[id]?.taskIds;
+  const orderedTasks = columns[id]?.task_order;
   const { tasks } = useTaskStore((state) => ({
     tasks: state.tasks,
   }));
 
   // console.log({currentColumn});
+  
   async function handleNewColumnTitle(title) {
     const prevTitle = currentColumn.title;
     updateColumnTitle(id, title);
@@ -54,7 +56,7 @@ export default function TasksList({ id }) {
                 <TaskCard
                   index={i}
                   key={taskId}
-                  item={tasks[taskId].content}
+                  item={tasks[taskId].title}
                   id={taskId}
                 />
               ))

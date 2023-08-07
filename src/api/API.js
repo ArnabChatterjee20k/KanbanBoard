@@ -1,6 +1,10 @@
 import { Client, Databases, ID, Query } from "appwrite";
 import config from "./config";
-import { badAuthError, notFoundError } from "../utils/errors";
+import {
+  badAuthError,
+  notFoundError,
+  someProblemsOccured,
+} from "../utils/errors";
 
 class API {
   constructor() {
@@ -13,7 +17,7 @@ class API {
 
     this.boardsId = config.boards;
     this.colId = config.cols;
-    this.colsOrderId = config.cols_order;
+    this.taskId = config.tasks;
   }
 
   async getAllBoards(userId) {
@@ -174,8 +178,46 @@ class API {
         title: newTitle,
       });
     } catch (error) {
-      return Promise.reject(error)
+      return Promise.reject(error);
     }
+  }
+
+  async addTaskToCol(col_id, board_db_id,provided_task_id) {
+    const [task, col] = await Promise.allSettled([
+      this.#addTask(col_id, board_db_id,provided_task_id),
+      this.db.getDocument(this.dbId, this.colId, col_id),
+    ]);
+    if (task.status === "rejected" || col.status === "rejected") {
+      throw someProblemsOccured();
+    }
+
+    const taskId = task.value;
+    const taskOrder = col.value.task_order;
+
+    return await this.db.updateDocument(this.dbId, this.colId, col_id, {
+      task_order: [...taskOrder, taskId],
+    });
+  }
+  async #addTask(col_id, board_db_id,provided_task_id) {
+    const task = await this.db.createDocument(
+      this.dbId,
+      this.taskId,
+      provided_task_id,
+      {
+        title: "New Task",
+        col_id,
+        board_id: board_db_id,
+      }
+    );
+
+    return task.$id;
+  }
+
+  async fetchAllTasks(board_db_id) {
+    const tasks = await this.db.listDocuments(this.dbId, this.taskId, [
+      Query.equal("board_id", [board_db_id]),
+    ]);
+    return tasks.documents;
   }
 }
 

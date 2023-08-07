@@ -28,13 +28,20 @@ const tasks = {
 };
 
 export const useTaskStore = create((set, get) => ({
-  tasks: tasks,
+  tasks: {},
+  setTasks: (newTasks) => {
+    const tasks = newTasks.reduce((prev, task) => {
+      prev[task.$id] = task;
+      return prev;
+    }, {});
+    set({ tasks });
+  },
   getTask: () => {
     return get();
   },
   addTask: (id, content) => {
     set((state) => ({
-      tasks: { [id]: { id, content ,subTasks:[]}, ...state.tasks },
+      tasks: { [id]: { id, content, subTasks: [] }, ...state.tasks },
     }));
   },
   addSubTask: (taskId, subTaskId) => {
@@ -44,30 +51,30 @@ export const useTaskStore = create((set, get) => ({
         [taskId]: {
           ...state.tasks[taskId],
           subTasks: [...state.tasks[taskId].subTasks, subTaskId],
-        }
+        },
       },
     }));
   },
-  updateTaskContent:(taskId,content)=>{
+  updateTaskContent: (taskId, content) => {
     set((state) => ({
       tasks: {
         ...state.tasks,
         [taskId]: {
           ...state.tasks[taskId],
-          content
-        }
+          content,
+        },
       },
     }));
   },
-  updateTaskDescription:(taskId,description)=>{
+  updateTaskDescription: (taskId, description) => {
     set((state) => ({
       tasks: {
         ...state.tasks,
         [taskId]: {
           ...state.tasks[taskId],
-          description
-        }
+          description,
+        },
       },
     }));
-  }
+  },
 }));
